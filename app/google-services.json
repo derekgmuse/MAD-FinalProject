@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "316744472502",
+    "project_id": "wod-calc",
+    "storage_bucket": "wod-calc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:316744472502:android:385a33c74070aaff709317",
+        "android_client_info": {
+          "package_name": "edu.northeastern.wod_calc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmpz4lZ6PzLWJrhhdctlQmiUxvFI5qkIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

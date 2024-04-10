@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    app:cardCornerRadius="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:textAlignment="center">
+
+
+        <TextView
+            android:id="@+id/movement_label"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="87dp"
+            android:layout_toStartOf="@+id/reps_label"
+            android:text="Movement"
+            android:textColor="#1E88E5"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/reps_label"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="35dp"
+            android:text="Repetitions"
+            android:textColor="#1E88E5"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/movement_value"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/movement_label"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="87dp"
+            android:layout_toStartOf="@+id/reps_value"
+            android:text="Pull-Ups"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="#00ACC1" />
+
+        <TextView
+            android:id="@+id/reps_value"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_below="@+id/movement_label"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="35dp"
+            android:text="25"
+            android:textColor="#00ACC1"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
