@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".QuickCalcActivity">
+    tools:context=".UserLogActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -18,32 +18,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="WOD Calculator"
+            android:text=" "
             android:layout_gravity="center"
-            android:id="@+id/toolbar_title" />
+            android:id="@+id/userLog_title" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="WOD Calc"
+            android:id="@+id/button_calc" />
+
 
     </androidx.appcompat.widget.Toolbar>
-
-    <Button
-        android:id="@+id/button_add"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_marginBottom="10dp"
-        android:text="+"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/guideline4" />
-
-    <Button
-        android:id="@+id/button_calculate"
-        android:layout_width="wrap_content"
-        android:layout_height="55dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline4"
-        app:layout_constraintStart_toEndOf="@+id/guideline3"
-        android:text="Calculate" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
@@ -66,11 +53,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="?attr/actionBarSize"
-        android:paddingBottom="?attr/actionBarSize"
         >
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/quick_calc_RV"
+            android:id="@+id/user_log_RV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"

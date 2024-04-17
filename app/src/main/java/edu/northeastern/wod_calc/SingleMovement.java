@@ -10,6 +10,10 @@ public class SingleMovement {
         this.reps = reps;
     }
 
+    public String toString(){
+        return reps + " " + name + " ";
+    }
+
     public void setName(String name){
         this.name = name;
     }

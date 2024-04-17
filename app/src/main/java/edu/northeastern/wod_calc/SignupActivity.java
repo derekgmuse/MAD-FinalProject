@@ -16,6 +16,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -67,7 +70,6 @@ public class SignupActivity extends AppCompatActivity {
 
     /**
      * Registers a user using Firebase Authentication
-     * TODO - add user object and initialize user in firebase database
      * source - https://www.youtube.com/watch?v=TStttJRAPhE&ab_channel=AndroidKnowledge
      *
      * @param email     User's email
@@ -79,10 +81,10 @@ public class SignupActivity extends AppCompatActivity {
         if (!email.isEmpty() && !password.isEmpty()) {
             auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
+                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    User newUser = new User(userId, username);
+                    FirebaseAPI.addUserToDatabase(this, newUser);
                     Toast.makeText(SignupActivity.this, "Sign up successful!", Toast.LENGTH_SHORT).show();
-                    //Launching login activity if the user is successful in signing up
-                    Intent intent_login = new Intent(SignupActivity.this, LoginActivity.class);
-                    startActivity(intent_login);
                 } else {
                     Toast.makeText(SignupActivity.this, "Sign up unsuccessful." + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }

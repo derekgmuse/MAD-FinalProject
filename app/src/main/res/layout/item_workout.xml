@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    app:cardCornerRadius="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:textAlignment="center">
+
+
+        <TextView
+            android:id="@+id/date_label"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="7dp"
+            android:text="Date"
+            android:textColor="#1E88E5"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
+        <TextView
+            android:id="@+id/date_value"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_below="@+id/date_label"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="4dp"
+            android:text="2024-04-16"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="#00ACC1" />
+
+        <TextView
+            android:id="@+id/est_time_label"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="7dp"
+            android:text="Est. Time"
+            android:textColor="#1E88E5"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
+        <TextView
+            android:id="@+id/est_time_value"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_below="@+id/date_label"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="4dp"
+            android:text="10m 20s"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="#00ACC1" />
+        <TextView
+            android:id="@+id/real_time_label"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="200dp"
+            android:layout_marginTop="7dp"
+            android:text="Real Time"
+            android:textColor="#1E88E5"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
+        <TextView
+            android:id="@+id/real_time_value"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_below="@+id/date_label"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="200dp"
+            android:layout_marginTop="4dp"
+            android:text="10m 20s"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="#00ACC1" />
+
+        <TextView
+            android:id="@+id/difficulty_label"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="300dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="0dp"
+            android:text="Difficulty"
+            android:textColor="#1E88E5"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
+        <TextView
+            android:id="@+id/difficulty_value"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_below="@+id/date_label"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="300dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="0dp"
+            android:text="*/10"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="#00ACC1" />
+
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

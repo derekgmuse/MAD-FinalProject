@@ -9,9 +9,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -75,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
         if(!email.isEmpty()){
             auth.signInWithEmailAndPassword(email, password).addOnSuccessListener(t->{
                 Toast.makeText(LoginActivity.this, "User Successfully Logged In", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, WODCalcActivity.class);
+                Intent intent = new Intent(LoginActivity.this, UserCalcActivity.class);
                 startActivity(intent);
                 finish();
             }).addOnFailureListener(t->{

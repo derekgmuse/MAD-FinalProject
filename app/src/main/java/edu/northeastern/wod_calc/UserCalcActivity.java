@@ -1,6 +1,8 @@
 package edu.northeastern.wod_calc;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,15 +18,22 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class QuickCalcActivity extends AppCompatActivity {
+public class UserCalcActivity extends AppCompatActivity {
 
     private List<SingleMovement> workout = new ArrayList<>();
     private RecyclerView workoutView;
     private CalculatorAdapter adapter;
-
     private Movement_Data allMovements;
     private ArrayList<String> all_mvmt;
 
@@ -32,21 +41,47 @@ public class QuickCalcActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_quick_calc);
+        setContentView(R.layout.activity_user_calc);
 
         allMovements = new Movement_Data();
         all_mvmt = allMovements.getMovementNames();
 
+        setUpToolBar();
         setUpRecyclerView();
         setUpAddButton();
         setUpCalculateButton();
+    }
 
+    private void setUpToolBar(){
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userID);
+        DatabaseReference usernameRef = userRef.child("username");
+
+        usernameRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final String username = dataSnapshot.getValue().toString();
+                TextView title = findViewById(R.id.userCalc_title);
+                title.setText("Welcome " + username);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
+        Button log = findViewById(R.id.button_log);
+
+        log.setOnClickListener(view -> {
+            Intent intent = new Intent(UserCalcActivity.this, UserLogActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void setUpRecyclerView() {
-        workoutView = findViewById(R.id.quick_calc_RV);
+        workoutView = findViewById(R.id.user_wod_RV);
         workoutView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CalculatorAdapter(QuickCalcActivity.this, workout, new CalculatorAdapter.MovementClickListener() {
+        adapter = new CalculatorAdapter(UserCalcActivity.this, workout, new CalculatorAdapter.MovementClickListener() {
             @Override
             public void onMovementClick(int position) {
                 setUpSelectDialog(false, position);
@@ -73,9 +108,8 @@ public class QuickCalcActivity extends AppCompatActivity {
         }).attachToRecyclerView(workoutView);
     }
 
-    //custom spinner in dialog resource: https://www.youtube.com/watch?v=nlqtyfshUkc&ab_channel=CodingDemos
     private void setUpAddButton(){
-        Button add = findViewById(R.id.button_add);
+        Button add = findViewById(R.id.button_add_mvmt);
 
         add.setOnClickListener(view -> {
             setUpSelectDialog(true, 0);
@@ -83,11 +117,11 @@ public class QuickCalcActivity extends AppCompatActivity {
     }
 
     private void setUpCalculateButton(){
-        Button calculate = findViewById(R.id.button_calculate);
+        Button calculate = findViewById(R.id.button_user_calculate);
         calculate.setOnClickListener(v->{
-            String result = calculateWOD();
+            String result = calculateWOD(true);
 
-            AlertDialog.Builder calc_result = new AlertDialog.Builder(QuickCalcActivity.this);
+            AlertDialog.Builder calc_result = new AlertDialog.Builder(UserCalcActivity.this);
 
             View result_layout = getLayoutInflater().inflate(R.layout.dialogue_result, null);
 
@@ -96,16 +130,28 @@ public class QuickCalcActivity extends AppCompatActivity {
 
             calc_result.setView(result_layout);
 
-
             //Setting Enter/Cancel buttons on AlertDialog
-            calc_result.setPositiveButton("New Workout", (dialogInterface, i) -> {
+            calc_result.setPositiveButton("Log Workout", (dialogInterface, i) -> {
 
+                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                String workoutId = UUID.randomUUID().toString();
+                UserWorkout newWOD = new UserWorkout(wodToString(), calculateWOD(false), userId, workoutId);
+                FirebaseAPI.addWorkout(newWOD);
+
+                workout.clear();
+                adapter.notifyDataSetChanged();
+                Intent intent = new Intent(UserCalcActivity.this, UserLogActivity.class);
+                startActivity(intent);
+            });
+
+            calc_result.setNeutralButton("Reset Calc", (dialogInterface, i) -> {
                 //resetting the recyclerview
                 workout.clear();
                 adapter.notifyDataSetChanged();
             });
 
-            calc_result.setNegativeButton("Cancel", (dialogInterface, i) -> {
+            calc_result.setNegativeButton("Edit Workout", (dialogInterface, i) -> {
                 dialogInterface.cancel();
             });
 
@@ -114,7 +160,16 @@ public class QuickCalcActivity extends AppCompatActivity {
         });
     }
 
-    private String calculateWOD(){
+    private String wodToString(){
+        String result = "[";
+        for(SingleMovement wod : workout){
+            result += wod.toString();
+        }
+        result += "]";
+        return result;
+    }
+
+    private String calculateWOD(boolean formatted){
 
         double total_time = 0;
         for(SingleMovement mvmt : workout){
@@ -128,19 +183,25 @@ public class QuickCalcActivity extends AppCompatActivity {
         double seconds = (total_time - minutes)*60;
         int sec = (int)Math.round(seconds);
 
-        String time = minutes + " minutes, " + sec + " seconds";
+        String time;
+        if(formatted){
+            time = minutes + " minutes, " + sec + " seconds";
+        }
+        else{
+            time = minutes + " m " + sec + " s";
+        }
         return time;
     }
 
     private void setUpSelectDialog(boolean adding, int pos){
-        AlertDialog.Builder enter_mvmt = new AlertDialog.Builder(QuickCalcActivity.this);
+        AlertDialog.Builder enter_mvmt = new AlertDialog.Builder(UserCalcActivity.this);
 
         View calc_layout = getLayoutInflater().inflate(R.layout.dialogue_calc, null);
 
         Spinner select_mvmt = calc_layout.findViewById(R.id.spinner_mvmt);
         ArrayAdapter<String> mvmt_adapter =
                 new ArrayAdapter<String>(
-                        QuickCalcActivity.this,
+                        UserCalcActivity.this,
                         android.R.layout.simple_spinner_item,
                         all_mvmt);
         mvmt_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -151,7 +212,7 @@ public class QuickCalcActivity extends AppCompatActivity {
         //in this case we are editing an existing movement in the recyclerview
         if (!adding){
             String selection = workout.get(pos).getName();
-            int selected_reps = (int) workout.get(pos).getReps();
+            int selected_reps = (int)workout.get(pos).getReps();
 
             select_mvmt.setSelection(mvmt_adapter.getPosition(selection));
             repText.setText(Integer.toString(selected_reps));
@@ -159,9 +220,6 @@ public class QuickCalcActivity extends AppCompatActivity {
 
         enter_mvmt.setView(calc_layout);
 
-        //Setting Enter/Cancel buttons on AlertDialog
-        //Set positive button very important here --> need to create/add new
-        //item card to the RecyclerView
         enter_mvmt.setPositiveButton("Enter", (dialogInterface, i) -> {
 
             String name = select_mvmt.getSelectedItem().toString();
@@ -188,7 +246,7 @@ public class QuickCalcActivity extends AppCompatActivity {
     }
 
     private void setUpDeleteDialog(int pos, SingleMovement deletedMovement){
-        AlertDialog.Builder delete_mvmt = new AlertDialog.Builder(QuickCalcActivity.this);
+        AlertDialog.Builder delete_mvmt = new AlertDialog.Builder(UserCalcActivity.this);
         delete_mvmt.setTitle("You have deleted " + deletedMovement.getName() + " for " + deletedMovement.getReps() + " reps");
 
         //Setting Yes/Cancel buttons on AlertDialog
@@ -203,5 +261,6 @@ public class QuickCalcActivity extends AppCompatActivity {
 
         delete_mvmt.show();
     }
+
 
 }
