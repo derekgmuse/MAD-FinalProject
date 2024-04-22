@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".SignupActivity">
 
     <TextView
@@ -58,6 +59,7 @@
         android:layout_width="206dp"
         android:layout_height="42dp"
         android:text="Sign Up"
+        android:backgroundTint="#1E88E5"
         app:layout_constraintBottom_toTopOf="@+id/onClick_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -12,47 +12,43 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * The Login activity of the application.  Allows user to enter their email and password to log in
+ * to their account where they will have the ability to calculate workouts and view their workout
+ * log.  Utilizes Firebase's email and password authentication.
+ */
+
 public class LoginActivity extends AppCompatActivity {
 
-    //Firebase authentication
     private FirebaseAuth auth;
-
-    //EditTexts for user email and password
     private EditText email, password;
-
-
-    //Button for user to login
     private Button button_login;
-
-    //Text to allow user to navigate to signup if they don't already have an account
     private TextView onClick_signup;
 
+    /**
+     * The onCreate initializes the FirebaseAuth object and sets up the UI of the activity.  Users
+     * are able to enter their information in editTexts as well as navigate to the Sign up activity
+     * if they have not yet created an account.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
-        // Initialize Firebase Authentication instance
         auth = FirebaseAuth.getInstance();
 
-        //Gathering the UI components
         email = findViewById(R.id.editText_login_email);
         password = findViewById(R.id.editText_login_password);
         button_login = findViewById(R.id.button_login);
         onClick_signup = findViewById(R.id.onClick_signup);
 
-        //setting onClick for the sign up button
         button_login.setOnClickListener(v -> {
             String user_email = email.getText().toString().trim();
             String user_password = password.getText().toString().trim();
-
-
-            // Perform user registration with Firebase Authentication.
             LoginUser(user_email, user_password);
         });
 
-        //setting onClick for the text view to navigate to login activity
         onClick_signup.setOnClickListener(v->{
             Intent intent_signup = new Intent(LoginActivity.this, SignupActivity.class);
             startActivity(intent_signup);
@@ -60,10 +56,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Logs in a user using Firebase Authentication
-     *
-     * Sources - https://www.youtube.com/watch?v=TStttJRAPhE&ab_channel=AndroidKnowledge
-     *        - https://www.geeksforgeeks.org/user-authentication-using-firebase-in-android/
+     * Logs in a user using Firebase Authentication.  In the case login fails, a toast message is
+     * set to alert the user that login has failed.  If the user leaves the email field blank, the
+     * text will be set within the email editText to alert the user that it cannot be blank.
      *
      * @param email     User's email.
      * @param password  User's password.
@@ -80,7 +75,6 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
         else {
-            //accessing editText
             this.email.setText("Email cannot be empty");
         }
     }

@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".MainActivity">
 
     <TextView
@@ -38,6 +39,7 @@
         android:layout_height="52dp"
         android:onClick="Login"
         android:text="LOGIN"
+        android:backgroundTint="#1E88E5"
         app:layout_constraintBottom_toTopOf="@+id/button_signup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -50,6 +52,7 @@
         android:layout_height="52dp"
         android:onClick="QuickCalc"
         android:text="QUICK CALC"
+        android:backgroundTint="#1E88E5"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -62,6 +65,7 @@
         android:layout_height="52dp"
         android:onClick="SignUp"
         android:text="SIGN UP"
+        android:backgroundTint="#1E88E5"
         app:layout_constraintBottom_toTopOf="@+id/button_quick_calc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

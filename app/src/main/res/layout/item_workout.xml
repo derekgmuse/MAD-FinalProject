@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
+    app:cardBackgroundColor="#a1c4fd"
     app:cardCornerRadius="5dp">
 
     <RelativeLayout
@@ -37,7 +38,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAlignment="center"
-            android:textColor="#00ACC1" />
+            android:textColor="#330867" />
 
         <TextView
             android:id="@+id/est_time_label"
@@ -63,7 +64,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAlignment="center"
-            android:textColor="#00ACC1" />
+            android:textColor="#330867" />
         <TextView
             android:id="@+id/real_time_label"
             android:layout_width="100dp"
@@ -88,7 +89,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAlignment="center"
-            android:textColor="#00ACC1" />
+            android:textColor="#330867" />
 
         <TextView
             android:id="@+id/difficulty_label"
@@ -116,7 +117,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAlignment="center"
-            android:textColor="#00ACC1" />
+            android:textColor="#330867" />
 
 
 

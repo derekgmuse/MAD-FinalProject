@@ -29,6 +29,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Represents the functionality of using the workout duration calculator while being logged
+ * in as a user.  A recycler view is set up to display SingleMovements (movements and repetitions)
+ * that make up a workout.  Users can add to the workout, edit parts of the workout with a click
+ * and delete parts of the workout by swiping.  Clicking the calculate button displays an alert
+ * dialog with workout duration estimate.  The user can do one of three things from here: log the
+ * workout (taking them to their user log), reset the calculator (clearing recycler view), or
+ * edit the existing workout.
+ */
 public class UserCalcActivity extends AppCompatActivity {
 
     private List<SingleMovement> workout = new ArrayList<>();
@@ -37,6 +46,13 @@ public class UserCalcActivity extends AppCompatActivity {
     private Movement_Data allMovements;
     private ArrayList<String> all_mvmt;
 
+    /**
+     * Initializes the allMovements array list that contains movement durations, as well as all_mvmt
+     * that contains the names of all movements that will be used in creating a drop down Spinner.
+     * The toolbar is set up to include the user's username as well as the ability to sign out or
+     * navigate to the user log. The recycler view is set, as well as the functionality of the add
+     * and calculate buttons.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +68,11 @@ public class UserCalcActivity extends AppCompatActivity {
         setUpCalculateButton();
     }
 
+    /**
+     * Setting up the toolbar by first getting the currently authenticated user's username from
+     * firebase and setting the title of the toolbar.  Next, setting up the sign out and log buttons
+     * to allow for the user to sign out or navigate to the log.
+     */
     private void setUpToolBar(){
         String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userID);
@@ -62,11 +83,12 @@ public class UserCalcActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 final String username = dataSnapshot.getValue().toString();
                 TextView title = findViewById(R.id.userCalc_title);
-                title.setText("Welcome " + username);
+                title.setText(username + "'s Calculator");
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("Firebase", "Value event listener cancelled for getting username");
             }
         });
 
@@ -76,8 +98,20 @@ public class UserCalcActivity extends AppCompatActivity {
             Intent intent = new Intent(UserCalcActivity.this, UserLogActivity.class);
             startActivity(intent);
         });
+
+        Button sign_out = findViewById(R.id.button_calc_sign_out);
+        sign_out.setOnClickListener(view -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(UserCalcActivity.this, LoginActivity.class);
+            startActivity(intent);
+        });
     }
 
+    /**
+     * Sets up the recycler view by setting the layout manager and attaching the adapter.  Onclick
+     * callback makes use of the setUpSelectDialog helper function.  Utilizes the ItemTouchHelper in
+     * order to implement onSwipe functionality to delete movements from the workout.
+     */
     private void setUpRecyclerView() {
         workoutView = findViewById(R.id.user_wod_RV);
         workoutView.setLayoutManager(new LinearLayoutManager(this));
@@ -89,14 +123,11 @@ public class UserCalcActivity extends AppCompatActivity {
         });
         workoutView.setAdapter(adapter);
 
-        //adding onSwipe to delete functionality using ItemTouchHelper
-        //source: https://www.geeksforgeeks.org/swipe-to-delete-and-undo-in-android-recyclerview/#
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
-
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int pos = viewHolder.getAdapterPosition();
@@ -108,6 +139,10 @@ public class UserCalcActivity extends AppCompatActivity {
         }).attachToRecyclerView(workoutView);
     }
 
+    /**
+     * Setting up the button to allow for user to add a movement to the workout.  Makes use of the
+     * setUpSelectDialog helper function.
+     */
     private void setUpAddButton(){
         Button add = findViewById(R.id.button_add_mvmt);
 
@@ -116,6 +151,14 @@ public class UserCalcActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Setting up the calculator button.  Creates a new alert dialog displaying an estimated time
+     * it would take to complete the workout entered by the user.  The user can choose from one of
+     * three options when a workout is calculated.  They can log the workout, which adds the workout
+     * to Firebase with the workout movements formatted as a string, the estimated time, userid and
+     * workout id set with UUID.randomUUID().  Otherwise, the user can reset the calc, clearing the
+     * recycler view or edit the workout, which preserves the current recycler view.
+     */
     private void setUpCalculateButton(){
         Button calculate = findViewById(R.id.button_user_calculate);
         calculate.setOnClickListener(v->{
@@ -160,15 +203,26 @@ public class UserCalcActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Creating a string of movements and repetitions to be stored in firebase and later displayed
+     * in the user log.
+     * @return a formatted string of movements and respective repetitions
+     */
     private String wodToString(){
-        String result = "[";
+        String result = "";
         for(SingleMovement wod : workout){
-            result += wod.toString();
+            result += (wod.toString() + "\n");
         }
-        result += "]";
         return result;
     }
 
+    /**
+     * Calculates the current workout based upon SingleMovements within the recycler view.  Iterates
+     * through each movement and divides the number of repetitions by the number of reps that can
+     * be completed in a minute producing the double total time it takes to complete the workout.
+     *
+     * @return a formatted String with the total time it takes to complet a specific workout
+     */
     private String calculateWOD(boolean formatted){
 
         double total_time = 0;
@@ -193,6 +247,17 @@ public class UserCalcActivity extends AppCompatActivity {
         return time;
     }
 
+    /**
+     * Setting up the select dialiog for adding a movement to the workout.  The user is able to
+     * select a movement from a custom drop down spinner containing all possible movements included
+     * in the all_mvmt array list. This dialog is used for cases when users are entering new movements
+     * or editing existing movements.
+     *
+     * @param adding a boolean value that represents if the user is adding a new movement (true) or
+     *               editing an existing movement (false)
+     * @param pos the position of the movement in the recycler view if the user is editing an existing
+     *            movement
+     */
     private void setUpSelectDialog(boolean adding, int pos){
         AlertDialog.Builder enter_mvmt = new AlertDialog.Builder(UserCalcActivity.this);
 
@@ -245,6 +310,15 @@ public class UserCalcActivity extends AppCompatActivity {
         enter_mvmt.show();
     }
 
+    /**
+     * Prompting the user if they are positive they want to delete a movement from the workout
+     * calculator.  The item is deleted onSwipe to the left, but in the case the user wants to undo
+     * this deletion, the SingleMovement is added back to the recycler view in the position it was
+     * previously in.
+     *
+     * @param pos the position of the deleted movement
+     * @param deletedMovement the SingleMovement deleted from the recycler view
+     */
     private void setUpDeleteDialog(int pos, SingleMovement deletedMovement){
         AlertDialog.Builder delete_mvmt = new AlertDialog.Builder(UserCalcActivity.this);
         delete_mvmt.setTitle("You have deleted " + deletedMovement.getName() + " for " + deletedMovement.getReps() + " reps");
@@ -261,6 +335,4 @@ public class UserCalcActivity extends AppCompatActivity {
 
         delete_mvmt.show();
     }
-
-
 }
